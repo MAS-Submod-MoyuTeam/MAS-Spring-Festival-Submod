@@ -1,0 +1,48 @@
+# 春节 事件处理器
+# 需要一些手段来获取每年春节的时间
+# location 春节节日图层（对联）
+# https://github.com/Monika-After-Story/MonikaModDev/blob/master/Monika%20After%20Story/game/script-holidays.rpy
+# HOL030
+
+# 是否一起经历除夕/春节
+
+#除夕
+default persistent._mas_sf_spent_n = False
+#春节
+default persistent._mas_sf_spent_d = False
+
+# 带出去次数
+default persistent._mas_sf_date_count = 0
+
+# 经历春节次数
+default persistent._mas_sf_count = 0
+
+init python in sf_event:
+    import datetime
+    from lunar_python import Lunar
+
+    def comp_day(day1, day2):
+        """
+        判断两个时间是不是同一天
+        
+        in:
+            day1, day2：两个datetime对象
+        return:
+            bool - 是不是同一天
+        """
+            date1 = day1.date()
+            date2 = day2.date()
+            if date1 == date2:
+                return True
+            else:
+                return False
+    def is_SpringFestival():
+        """
+        判断今天是不是春节
+        return：
+            bool - 是不是春节
+        """
+        sf = Lunar.fromYmd(datetime.date.today().year,1,1).getSolar()
+        sfd = datetime.datetime(sf.getYear(), sf.getMonth(), sf.getDay())
+        td = datetime.datetime.now()
+        return comp_day(sfd, td)
