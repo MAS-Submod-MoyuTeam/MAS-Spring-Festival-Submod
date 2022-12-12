@@ -4,11 +4,14 @@
 # https://github.com/Monika-After-Story/MonikaModDev/blob/master/Monika%20After%20Story/game/script-holidays.rpy
 # HOL030
 
-# 是否一起经历除夕/春节
+# 当前是否为春节
+default persistent._mas_sf_isnow = False
 
-#除夕
+# 是否一起经历春节
+
+# 除夕
 default persistent._mas_sf_spent_n = False
-#春节
+# 春节
 default persistent._mas_sf_spent_d = False
 
 # 带出去次数
@@ -17,7 +20,7 @@ default persistent._mas_sf_date_count = 0
 # 经历春节次数
 default persistent._mas_sf_count = 0
 
-init python in sf_event:
+init -980 python in sf_event:
     import datetime
     from lunar_python import Lunar
 
@@ -39,6 +42,7 @@ init python in sf_event:
     def is_SpringFestival():
         """
         判断今天是不是春节
+
         return：
             bool - 是不是春节
         """
@@ -46,3 +50,8 @@ init python in sf_event:
         sfd = datetime.datetime(sf.getYear(), sf.getMonth(), sf.getDay())
         td = datetime.datetime.now()
         return comp_day(sfd, td)
+    
+label sf_put_couplets:
+    # 贴春联，禁用切换房间且切换至默认房间
+    # 算了 不想动弹
+    return

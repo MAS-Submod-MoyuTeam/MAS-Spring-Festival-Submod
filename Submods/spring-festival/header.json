@@ -1,0 +1,15 @@
+{
+    "header_version": 1,
+    "author": "P",
+    "name": "Spring Festival",
+    "version": "0.0.3",
+    "modules": [
+        "sf_event",
+        "sf_topic"
+    ],
+    "description": "为MAS添加一系列春节相关的活动.",
+    "dependencies": {
+        "话题整合包": ["1.1.0", null]
+    },
+    "priority": 0
+}

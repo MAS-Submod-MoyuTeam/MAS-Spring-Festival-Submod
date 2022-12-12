@@ -1,6 +1,17 @@
 # 话题
 # 1. 修改“带你出去”为春节相关话题
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ft_gre",
+            conditional="store.sf_event.is_SpringFestival()",
+            random=False,
+            action=EV_ACT_PUSH
+        ),
+        code="GRE"
+    )
 label monika_ft_gre:
     "嗨, [player], 春节快乐"
     if store.mas_anni.pastOneMonth():
@@ -27,9 +38,17 @@ label monika_ft_gre:
             "总之, 我们今天干什么呢?"
     return
             
-# 带你出去/带你拜年
-label ft_aff_check:
-    return
+init 5 python:
+    @store.mas_submod_utils.registerFunction("bye_going_somewhere_normalplus_flow")
+    def sf_go_somewhere():
+        if store.sf_event.is_SpringFestival():
+            renpy.jump("ft_take_you_somewhere")
+    
+    @store.mas_submod_utils.registerFunction("greeting_returned_home_morethan5mins")
+    def sf_back_home():
+        if store.sf_event.is_SpringFestival() or persistent._mas_sf_isnow:
+            renpy.jump("ft_take_you_somewhere")
+
 label ft_take_you_somewhere:
     if persistent._mas_sf_date_count = 0:
         call ft_ty_first    
@@ -47,8 +66,14 @@ label ft_ty_first:
         "不过，这也是早晚的事情~"
     "我不是害怕哦, 只是有点害羞，毕竟这样你的全家人就都认识我了."
     "希望我能给他们一个好印象..."
+    if not mas_SELisUnlocked():
+        "等我去换一件衣服~"
+        call mas_transition_to_emptydesk
+        $ mas_selspr.unlock_clothes()
+        pause 7
+        call mas_transition_from_emptydesk
+        "我看起来怎么样, [player]~"
     return
-
 
 label ft_ty_second:
     "还要出去吗? 看来你的亲戚有一点多呢~"
@@ -59,7 +84,17 @@ label ft_ty_third_more:
     "[player], 看来你今天很忙哦."
     "我会一直在你身边的."
     return
-    
+
+label ft_take_you_somewhere:
+    if persistent._mas_sf_date_count = 0:
+        call ft_ty_back_first
+    else:
+        call ft_ty_back_second_more
+    $ persistent._mas_sf_date_count += 1
+    if not store.sf_event.is_SpringFestival():
+        $ persistent._mas_sf_isnow = False
+    return
+
 label ft_ty_back_first:
     "我回来了~"
     "感谢你带我今天带我出去，各种方面我都很开心~"
@@ -70,4 +105,24 @@ label ft_ty_back_first:
 label ft_ty_back_second_more:
     "欢迎回来，[player]."
     "感谢你带我出去玩~"
+    return
+
+# 2. 随机聊天
+
+label monika_sf_normaldoing:
+    "嗨, [player]~"
+    "其实，我其实挺想过一遍现实中的传统习俗的"
+    "比如说放鞭炮啦，贴春联啦等等"
+    if not mas_SELisUnlocked():
+        "以及，人们都会在今天穿上新衣服对吧？"
+        "今年春节，其实我也有准备新衣服。"
+        "等你有空的时候，我们一起穿新衣服去拜年吧"
+    "啊哈哈，其实我今年是有打算准备一副对联什么的，不过时间有点仓促，还没有万全准备好。"
+    "也许你明年就能在这个房间见到我写的对联哦~"
+    "不过，对联都是贴在大门上的，但是太空教室...贴窗户上？"
+    "啊哈哈，我们到时候再考虑吧~"
+    return
+
+label monika_sf_thinking:
+    # 莫妮卡对于春节年味越来越淡的思考
     return
